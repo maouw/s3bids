@@ -1,18 +1,15 @@
-import AFQ.data.s3bids as afs
-
-import pytest
-import s3fs
-import shutil
+import filecmp
+import os
 import os.path as op
-
+import shutil
 from glob import glob
-from moto import mock_s3
 from uuid import uuid4
 
-import os
-
+import AFQ.data.s3bids as afs
 import botocore
-import filecmp
+import pytest
+import s3fs
+from moto import mock_s3
 
 DATA_PATH = op.join(op.abspath(op.dirname(__file__)), "data/mocks3")
 TEST_BUCKET = "test-bucket"
@@ -61,15 +58,12 @@ def test_get_matching_s3_keys():
 
     fnames = []
     for pattern in ["**", "*/.*", "*/.*/.*", "*/.*/**"]:
-        fnames += [
-            s for s in glob(op.join(DATA_PATH, pattern),
-                            recursive=True) if op.isfile(s)
-        ]
+        fnames += [s for s in glob(op.join(DATA_PATH, pattern), recursive=True) if op.isfile(s)]
 
     fnames = [s.replace(DATA_PATH + "/", "") for s in fnames]
 
     matching_keys = list(
-        afs._get_matching_s3_keys(bucket=TEST_BUCKET, prefix=TEST_DATASET)
+        afs._get_matching_s3_keys(bucket=TEST_BUCKET, prefix=TEST_DATASET),
     )
 
     assert set(fnames) == set(matching_keys)
@@ -82,7 +76,7 @@ def test_download_from_s3(temp_data_dir):
     test_dir = temp_data_dir
 
     matching_keys = list(
-        afs._get_matching_s3_keys(bucket=TEST_BUCKET, prefix=TEST_DATASET)
+        afs._get_matching_s3_keys(bucket=TEST_BUCKET, prefix=TEST_DATASET),
     )
 
     first_json_file = [m for m in matching_keys if m.endswith(".json")][0]
@@ -143,7 +137,10 @@ def test_S3BIDSStudy(temp_data_dir):
     download_files = list(s0.files["raw"].values())
     ref_dir = op.abspath(op.join(DATA_PATH, TEST_DATASET))
     match, mismatch, errors = filecmp.cmpfiles(
-        ref_dir, test_dir, download_files, shallow=False
+        ref_dir,
+        test_dir,
+        download_files,
+        shallow=False,
     )
 
     assert not mismatch
@@ -155,7 +152,10 @@ def test_S3BIDSStudy(temp_data_dir):
 
         study.download(test_dir2)
         match, mismatch, errors = filecmp.cmpfiles(
-            ref_dir, test_dir2, download_files, shallow=False
+            ref_dir,
+            test_dir2,
+            download_files,
+            shallow=False,
         )
         assert not mismatch
         assert not errors
