@@ -9,6 +9,7 @@ import AFQ.data.s3bids as afs
 import botocore
 import pytest
 import s3fs
+import src.s3bids.S3BIDSStudy
 from moto import mock_s3
 
 DATA_PATH = op.join(op.abspath(op.dirname(__file__)), "data/mocks3")
@@ -99,7 +100,7 @@ def test_S3BIDSStudy(temp_data_dir):
 
     test_dir = temp_data_dir
 
-    study = afs.S3BIDSStudy(
+    study = src.s3bids.S3BIDSStudy.S3BIDSStudy(
         study_id="test",
         bucket=TEST_BUCKET,
         s3_prefix=TEST_DATASET,
@@ -110,7 +111,7 @@ def test_S3BIDSStudy(temp_data_dir):
 
     assert len(study.subjects) == 5
 
-    study = afs.S3BIDSStudy(
+    study = src.s3bids.S3BIDSStudy.S3BIDSStudy(
         study_id="test",
         bucket=TEST_BUCKET,
         s3_prefix=TEST_DATASET,
@@ -120,7 +121,7 @@ def test_S3BIDSStudy(temp_data_dir):
 
     assert len(study.subjects) == 1
 
-    study = afs.S3BIDSStudy(
+    study = src.s3bids.S3BIDSStudy.S3BIDSStudy(
         study_id="test",
         bucket=TEST_BUCKET,
         s3_prefix=TEST_DATASET,
