@@ -1,8 +1,8 @@
 import weakref
 
-from .HBNSubject import HBNSubject
-from .S3BIDSStudy import S3BIDSStudy
-from .utils import _ls_s3fs, to_bids_description
+from s3bids import S3BIDSStudy
+from s3bids.hbn.subject import HBNSubject
+from s3bids.utils import _ls_s3fs, to_bids_description
 
 
 class HBNSite(S3BIDSStudy):

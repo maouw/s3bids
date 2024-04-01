@@ -2,14 +2,15 @@ import contextlib
 import logging
 import os
 from dataclasses import dataclass, field
-
+from typing import Any
+import weakref
 from tqdm.asyncio import tqdm
 
-from .S3BIDSStudy import S3BIDSStudy
-from .utils import _download_from_s3, _get_matching_s3_keys
+from s3bids import S3BIDSStudy
+
+from s3bids.utils import _download_from_s3, _get_matching_s3_keys
 
 
-@dataclass
 class S3BIDSSubject:
     """A single study subject hosted on AWS S3."""
 
@@ -17,17 +18,6 @@ class S3BIDSSubject:
     """Subject-ID for this subject."""
     study: "S3BIDSStudy"
     """The S3BIDSStudy for which this subject was a participant."""
-    s3_keys: dict[str, list[str]] = field(default_factory=dict, init=False, repr=False)
-    files: dict = field(default_factory=dict, init=False, repr=False)
-    """Local files for this subject's dMRI data
-
-        Before the call to subject.download(), this is None.
-        Afterward, the files are stored in a dict with keys
-        for each Amazon S3 key and values corresponding to
-        the local file.
-        """
-    # dict[str, dict[Any, Any]]
-    """Dict of S3 keys for this subject's data."""
 
     def __post_init__(self):
         logging.getLogger("botocore").setLevel(logging.WARNING)  # TODO: Setby environment variable?

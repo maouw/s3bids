@@ -1,7 +1,6 @@
-from .HBNSite import HBNSite
-from .S3BIDSSubject import S3BIDSSubject
-from .utils import _get_matching_s3_keys
-
+from s3bids import S3BIDSSubject
+from s3bids.hbn.site import HBNSite
+from s3bids.utils import _get_matching_s3_keys
 
 class HBNSubject(S3BIDSSubject):
     """A subject in the HBN study
